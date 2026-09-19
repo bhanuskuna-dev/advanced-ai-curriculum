@@ -2,6 +2,8 @@
 
 Build a small Q&A app that answers questions over a handful of your own documents — 5 to 15 real files (notes, a PDF, README files from a project, articles you've saved) — with visible citations back to the source chunks. The point isn't scale; it's building and honestly evaluating a real retrieve → augment → generate pipeline end to end.
 
+A corpus with real stakes attached makes this project more useful: consider indexing your own resume bullet bank, PRDs, or role documentation (like the bullet bank and profile data behind your job-search tooling) and building a Q&A layer over it — "which roles involved model governance work?" or "what quantified impact did I have in credit strategy?" — so you can honestly judge whether the citations it returns are actually right, because you already know the ground truth.
+
 ## Milestones
 
 1. **Pick a real corpus.** Not a toy example — use documents you'd actually want to ask questions about, so you can judge answer quality yourself rather than guessing.

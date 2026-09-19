@@ -17,6 +17,8 @@ Splitting text into non-overlapping chunks risks severing a sentence or idea exa
 
 Splitting purely by character or token count, blind to document structure, routinely cuts through headings, list items, or code blocks mid-way. Better: chunk along natural boundaries — markdown headings, paragraph breaks, function definitions in code — so each chunk is a coherent unit a human would also consider "one piece." Most real RAG pipelines use a hybrid: split by structural boundaries first, then further split any resulting chunk that's still too large by size, rather than applying fixed-size splitting uniformly from the start.
 
+Regulatory guidance is a good example of why this matters: SR 11-7's model-risk-management guidance is organized into numbered sections and clauses, each a self-contained requirement. Chunking blind to that structure could easily split one clause's obligation from its own scope statement, so a retrieval for "ongoing monitoring requirements" pulls back half a requirement with no way to tell what it's missing. Chunking along the guidance's own section boundaries keeps each retrievable unit exactly as complete as the regulation itself intended it to be.
+
 ## What a vector database actually adds
 
 Once you have thousands (or millions) of chunk embeddings, computing cosine similarity against every single one at query time (a full linear scan) becomes too slow. A vector database's job is **approximate nearest-neighbor (ANN) search**: index structures that find the top-K most similar vectors *without* comparing against every stored vector, trading a small amount of accuracy for a large speedup.
@@ -31,6 +33,8 @@ You will not typically implement these yourself — vector databases (Pinecone, 
 ## Metadata filtering
 
 Real retrieval queries are rarely "find anything semantically similar" — they're "find anything semantically similar, published after March, from the engineering team's docs." Storing metadata (timestamps, source, category, access permissions) alongside each chunk's vector, and filtering on it *before or alongside* the similarity search, is what makes retrieval usable in a real product rather than a demo over a single clean corpus. Access-control filtering in particular is not optional in any multi-tenant system — a vector search that can return chunks the requesting user isn't permitted to see is a security bug, not a retrieval-quality nuance.
+
+This is precisely the problem behind streamlining adverse-action templates: when a template gets revised, the old version doesn't disappear from the corpus — it just needs an `effective_date` and `superseded` field so a retrieval for "current adverse-action language" filters to the version actually in force today, not whichever version happens to score highest on similarity alone.
 
 ## A practical starting checklist
 

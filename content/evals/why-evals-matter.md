@@ -4,6 +4,8 @@ When you change traditional code and break something, you usually find out fast:
 
 This is the core reason evals exist: **they turn a silent failure mode into a measured one.** An eval suite is, at its simplest, a set of inputs where you already know the correct answer, run automatically against your current system, scored against that known answer. It's a test suite, for a kind of system where "correct" is fuzzier than a traditional unit test's exact-equality check — but the discipline is the same one: catch regressions before they reach users, not after.
 
+This isn't a new discipline invented for LLMs — it's the same discipline a PD (Probability of Default) model's ongoing performance monitoring already requires under model-risk-management guidance like SR 11-7: a credit risk model that silently drifts out of calibration is exactly as dangerous, for exactly the same reason, as an LLM feature that silently regresses. A model-governance platform overseeing 300+ production models exists precisely because "it looked fine when we shipped it" is not an acceptable standard for something making real decisions at scale.
+
 ## A concrete worked example
 
 Consider a transaction categorizer: given a bank transaction description, classify it into one of 16 spending categories. You ship it, it looks great in your own manual testing, and it goes to production. Three weeks later, you tweak the prompt to fix one specific miscategorization you noticed (`COSTCO WHOLESALE` was landing in "Shopping" instead of "Groceries"). Without an eval suite, you have no way to know whether that fix also broke five other categories that were working fine before — you'd only find out from user complaints, if you find out at all. With an eval suite, you re-run your 30 labeled examples after the prompt change and immediately see: overall accuracy held steady, but recall on "Auto & Transportation" dropped ten points, because your fix's new instruction accidentally pulled gas-station transactions toward "Shopping" too. That's not a hypothetical — it's the exact shape of failure evals are designed to catch, and it's invisible without them.
@@ -24,7 +26,7 @@ The real value isn't a dashboard you glance at occasionally — it's a **gate**:
 
 - **Before shipping any prompt change** — the change that "obviously" only affects one thing is exactly the kind that most often has an unintended side effect elsewhere.
 - **After any model version update** — a newer model version is not guaranteed to be strictly better on your specific task; it can shift behavior in ways that help some cases and hurt others.
-- **When a leading indicator drifts** — for a categorizer with human review, a rising override rate (users correcting the AI's suggestion more often than usual) is a sign the model's real-world accuracy has drifted from what your eval baseline assumed, and it's worth re-running the eval to confirm and quantify.
+- **When a leading indicator drifts** — for a categorizer with human review, a rising override rate (users correcting the AI's suggestion more often than usual) is a sign the model's real-world accuracy has drifted from what your eval baseline assumed, and it's worth re-running the eval to confirm and quantify. This is the same signal a credit risk model's ongoing-monitoring plan watches for under SR 11-7 — a rising rate of manual overrides on a model's decisions is treated as an early warning that the model needs re-validation, not dismissed as noise.
 
 ## The habit this lesson is really teaching
 

@@ -4,6 +4,8 @@ A single tool call answers one question. An **agent** is what you get when you l
 
 What makes something feel like an agent rather than a chatbot with plugins is **multi-step planning that adapts to intermediate results**. A tool-using chatbot calls one tool and reports back. An agent might call a tool, look at the result, realize it needs a different tool based on what it found, call that, and only then decide it has enough to act — without you scripting that sequence in advance.
 
+This is the actual shape of a requirements-automation agent that turns discovery notes into fully documented feature scenarios: it might pull existing policy context, realize the feature touches an area with an open regulatory requirement, and decide on its own to check that requirement before drafting scenarios — a branch you didn't hard-code, because you couldn't have predicted which features would trigger it.
+
 ## The loop, with a stopping condition
 
 Unbounded loops are a production hazard. Always cap iterations and give Claude an explicit way to signal it's done:
@@ -31,7 +33,7 @@ Every tool result you append stays in the conversation for the rest of the sessi
 
 Three practical mitigations, roughly in order of how often you need them:
 
-1. **Summarize, don't accumulate.** Once a tool result has been used to inform a decision, you often don't need the raw payload anymore — replace it with a short summary before the next call, or drop it from the history entirely if it's fully superseded.
+1. **Summarize, don't accumulate.** Once a tool result has been used to inform a decision, you often don't need the raw payload anymore — replace it with a short summary before the next call, or drop it from the history entirely if it's fully superseded. A scenario-documentation agent working through a large feature doesn't need every prior scenario's full text in context to write the next one — a one-line summary of what's already been covered is usually enough to avoid duplication.
 2. **Return the minimum useful data from tools.** This is a tool-design decision (previous lesson) that pays off here: a tool that returns `{ total: 1240, category: "Dining" }` costs far less context than one that returns every underlying transaction.
 3. **Prune or compact history at length thresholds.** For long conversations, replace the oldest N turns with a short summary message once the conversation crosses a token or turn-count threshold, keeping recent context verbatim and older context compressed.
 
@@ -46,3 +48,5 @@ For tasks that need multi-step reasoning before acting, it often helps to let Cl
 ## A concrete smell test
 
 If you find yourself hand-coding the *sequence* of tool calls an agent should make ("first call A, then always call B with A's result"), you've built a fixed pipeline, not an agent — which is often the right choice! Agents earn their complexity when the right next step genuinely depends on what previous steps returned. If it doesn't, a deterministic pipeline is cheaper, faster, and easier to debug than paying an LLM to make a decision that was never actually in doubt.
+
+Applied to the requirements-lifecycle example: "discovery → feature definition → scenario documentation" is a fixed sequence — always the same three stages in the same order — so that part is legitimately a pipeline, not a decision an agent needs to make fresh each time. What made it agentic was *within* each stage: deciding which follow-up questions a discovery conversation still needed, or which edge cases a scenario document had to cover, genuinely depended on what came before and couldn't be scripted in advance.

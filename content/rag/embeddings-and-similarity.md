@@ -11,6 +11,8 @@ const [docEmbedding] = await embed(["To end your recurring billing, go to Settin
 
 This is the entire reason embeddings beat plain keyword search for many retrieval tasks: keyword search finds documents that share your query's *words*; embedding search finds documents that share your query's *meaning*. "Cancel my subscription" and "end recurring billing" match on meaning, not vocabulary.
 
+The same property is what makes embeddings useful for a model-governance intake process: a new model's stated purpose ("automated decisioning for revolving credit line adjustments") should embed close to a previously reviewed model described as "algorithm for adjusting customer credit limits," even though the wording barely overlaps — letting a governance team surface the most comparable past review as precedent, instead of a reviewer having to remember or keyword-search for it.
+
 ## Cosine similarity, the whole idea
 
 To compare two embedding vectors, you need a way to measure "how close" they are. The standard choice is **cosine similarity**: the cosine of the angle between the two vectors, ranging from -1 (opposite meaning) to 1 (identical meaning), with values near 0 meaning unrelated. In practice, you almost never compute the angle directly — you compute it via the dot product of the (normalized) vectors, which is cheap:
@@ -31,7 +33,7 @@ Embeddings capture *semantic* similarity, not factual correctness, recency, or e
 
 - **Exact identifiers.** Product SKUs, error codes, or ticket numbers ("ERR-4471") often embed poorly — an embedding model reasons about meaning, and an alphanumeric code doesn't carry much semantic content on its own. Keyword or exact-match search is often better for these.
 - **Negation and specificity.** "Cancel my subscription" and "how do I *avoid* cancelling my subscription accidentally" can embed close together despite being near-opposite intents, because they share heavy semantic overlap in topic even though the actual meaning diverges. Embeddings capture topic similarity more reliably than fine-grained logical distinctions.
-- **Freshness bias.** An embedding has no notion of "this document is outdated." Two documents about the same topic, one current and one superseded, embed similarly — ranking by similarity alone won't surface the current one over the stale one; you need metadata (a timestamp) and explicit filtering or boosting for that.
+- **Freshness bias.** An embedding has no notion of "this document is outdated." Two documents about the same topic, one current and one superseded, embed similarly — ranking by similarity alone won't surface the current one over the stale one; you need metadata (a timestamp) and explicit filtering or boosting for that. An old adverse-action letter template and its revised replacement will embed almost identically — they're about the same topic in the same style — so nothing about their vectors tells you which one is actually still in effect.
 
 This is why production retrieval systems rarely rely on embedding similarity alone — see "Advanced RAG Patterns" for hybrid approaches that combine semantic and keyword search to cover each other's blind spots.
 

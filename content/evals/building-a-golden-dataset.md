@@ -16,9 +16,13 @@ This is the single highest-leverage idea in dataset construction. A model correc
 
 A dataset built entirely from easy cases will show 98% accuracy right up until production traffic — full of exactly this kind of ambiguity — reveals the real number is much lower. Deliberately seek out and include the confusing cases; they're where a model's real quality is actually visible.
 
+Credit underwriting golden sets follow the identical logic. A PD (Probability of Default) model correctly scoring a borrower with a long, clean, high-income credit history tells you almost nothing — that's the easy case. What actually validates the model: a thin-file applicant with limited credit history but strong income, or a borrower with one old delinquency but years of clean payments since. Those are the profiles where a miscalibrated model actually reveals itself, exactly the way `COSTCO WHOLESALE` reveals a categorizer's real handling of ambiguity that unambiguous merchants never would.
+
 ## Write down *why*, not just the label
 
 Every labeled example should include a short note explaining the reasoning behind its correct label — not just for documentation's sake, but because it forces precision in the labeling decision itself. If you can't articulate *why* `COSTCO WHOLESALE` is Groceries rather than Shopping in a sentence, you probably haven't thought it through enough to trust the label. This note also massively speeds up debugging later: when the model gets a case wrong, the rationale tells you immediately whether the model's reasoning was actually unreasonable, or whether it made a defensible call on a genuinely ambiguous case that your dataset happens to have decided one way.
+
+This is exactly the discipline SR 11-7 already demands of model-risk documentation: every model decision needs a documented rationale a reviewer can audit later, not just a label. Writing the "why" for a golden-dataset example and writing the "why" for a model's risk-tier classification in a governance review are the same underlying skill.
 
 ## Datasets go stale
 

@@ -12,11 +12,11 @@ Query → vector search (top 20, cheap & approximate)
       → top 5 (high precision, small enough to fit in the prompt)
 ```
 
-This two-stage "retrieve broad, rank precisely" pattern is one of the highest-leverage improvements you can make to a mediocre RAG pipeline, because it fixes the actual bottleneck: vector search is good at *not missing* relevant documents when cast wide, but weaker at *precisely ordering* a candidate set — which is exactly what a cross-encoder is good at.
+This two-stage "retrieve broad, rank precisely" pattern is one of the highest-leverage improvements you can make to a mediocre RAG pipeline, because it fixes the actual bottleneck: vector search is good at *not missing* relevant documents when cast wide, but weaker at *precisely ordering* a candidate set — which is exactly what a cross-encoder is good at. Searching across hundreds of model-governance submissions for the most comparable prior review benefits from exactly this: cast a wide net on similarity first (don't risk missing the genuinely comparable model), then spend the precise, expensive comparison only on the shortlist.
 
 ## Hybrid search
 
-Embeddings and keyword search fail in complementary ways (the "What Embeddings Are Bad At" section of the earlier lesson): embeddings miss exact identifiers and precise phrase matches; keyword search misses paraphrases and synonyms. **Hybrid search** runs both in parallel — a vector search and a traditional keyword/BM25 search — and combines their results (commonly via a technique called reciprocal rank fusion, which merges two ranked lists by rewarding items that rank well in either). The result covers both failure modes: a query mentioning an exact error code *and* a conceptually related idea gets good matches for both parts.
+Embeddings and keyword search fail in complementary ways (the "What Embeddings Are Bad At" section of the earlier lesson): embeddings miss exact identifiers and precise phrase matches; keyword search misses paraphrases and synonyms. **Hybrid search** runs both in parallel — a vector search and a traditional keyword/BM25 search — and combines their results (commonly via a technique called reciprocal rank fusion, which merges two ranked lists by rewarding items that rank well in either). The result covers both failure modes: a query mentioning an exact error code *and* a conceptually related idea gets good matches for both parts. This is exactly the shape of a policy question like "does Reg B §1002.9 cover this adverse-action scenario" — the exact citation (`§1002.9`) needs keyword precision, while "adverse-action scenario" needs semantic matching against guidance that may phrase it differently; neither search method alone reliably covers both halves of that query.
 
 ## Query rewriting
 
@@ -24,7 +24,7 @@ Users don't always phrase questions in a way that embeds well against your corpu
 
 ## Citations as a hallucination check, not just a UI nicety
 
-Asking the model to cite sources (from the previous lesson) does more than improve trust — it's a mechanism you can verify programmatically. If the model's answer cites source [2] for a specific claim, you can check that claim actually appears in chunk [2]'s text. A citation that doesn't hold up under this check is a strong, cheap signal of hallucination, and some production systems use exactly this as an automated guardrail: flag or suppress answers whose citations don't verify against the cited source text, rather than trusting the citation just because it's present.
+Asking the model to cite sources (from the previous lesson) does more than improve trust — it's a mechanism you can verify programmatically. If the model's answer cites source [2] for a specific claim, you can check that claim actually appears in chunk [2]'s text. A citation that doesn't hold up under this check is a strong, cheap signal of hallucination, and some production systems use exactly this as an automated guardrail: flag or suppress answers whose citations don't verify against the cited source text, rather than trusting the citation just because it's present. In an audit-readiness context, this verification step isn't optional polish — an assistant's claim that "the current process satisfies requirement X" needs to be traceable to an actual retrieved clause, because "the AI said so" is not an answer that survives an actual regulatory exam.
 
 ## Diminishing returns and when to stop
 

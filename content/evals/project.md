@@ -2,6 +2,8 @@
 
 Build a small eval harness for a prompt or agent you already have — ideally the tool-using agent or RAG pipeline you built in the earlier modules' projects, but any prompt-based feature works. The goal is a repeatable, scorable process, not a one-off manual check.
 
+If you'd rather build something with a real domain grounding: build an eval harness for a PD/LGD-style binary or tiered classification task (a small mock credit-decisioning dataset works fine — it doesn't need to be real production data), and explicitly plot a calibration chart, the same way an actual credit risk model's calibration would be validated under a model-risk-management framework. Or evaluate the requirements-automation agent from Module 1's project: build a golden set of "discovery notes → expected scenario doc coverage" pairs and score whether the agent's output actually covers the required scenarios.
+
 ## Milestones
 
 1. **Build a golden dataset of at least 15–20 examples** covering your feature's real behavior space, deliberately weighted toward edge cases (see "Building a Golden Dataset"). Each example needs an input, a correct/expected output, and a one-sentence rationale for why that's correct.

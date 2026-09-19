@@ -20,6 +20,8 @@ On the first request, the marked prefix is processed and cached (a slightly high
 
 The practical rule: **put the parts of your prompt that don't change (persona, instructions, tool definitions, reference documents) before the parts that do (the user's actual message), and mark the stable prefix as cacheable.** Order matters — caching only helps the shared prefix, so anything variable needs to come after the cached block, not interleaved with it.
 
+A model-governance platform reviewing hundreds of models against the same body of SR 11-7 guidance is close to the ideal case for this: the guidance text itself doesn't change between one model's review and the next, so it belongs in the cached prefix, with only the specific model's documentation varying per request. Cache that once, and every subsequent review pays the 90%-reduced rate on the policy text instead of reprocessing the same guidance hundreds of times over.
+
 ## Batching
 
 If you have many independent requests that don't need an immediate response — categorizing 500 transactions overnight, generating summaries for a backlog of documents — the Batches API processes them asynchronously at a substantial discount versus the same volume of synchronous calls. The tradeoff is turnaround time (results arrive within a window, not instantly) for cost. This only makes sense for workloads that were never latency-sensitive in the first place; it's the wrong tool for anything a user is waiting on.
@@ -35,9 +37,13 @@ Not every step in an agent needs the same model. A useful default heuristic:
 
 A common production pattern: run cheap classification across a large volume with a fast model, route only the ambiguous or low-confidence cases to a stronger model or a human, and reserve the most capable (and most expensive) model for the step that actually needs deep reasoning — like a planning or synthesis agent sitting on top of several cheap worker calls. Defaulting everything to the most capable model is the single most common way agent costs balloon without a matching quality improvement.
 
+Picture triaging incoming model-governance submissions: a fast, cheap model can handle the first pass — sorting hundreds of intake submissions by declared risk tier and flagging obviously incomplete documentation — while the expensive model is reserved for the step that actually needs judgment: synthesizing a governance narrative a senior leader will read and act on. Running the expensive model on every intake submission just to sort them by tier would be paying reasoning-model prices for a classification-model job.
+
 ## Confidence thresholds as a cost/quality knob
 
 When a model returns a confidence score alongside a classification, that score isn't just informational — it's a lever. Auto-applying above a calibrated threshold and routing below it to human review (or a stronger model) turns "how much do we trust the cheap path" into a tunable parameter you can adjust as you gather more data on where it's actually accurate. This connects directly to the evals module: you can't set this threshold responsibly without measuring whether confidence at a given level actually correlates with correctness.
+
+This is the same tradeoff a $12B+ credit portfolio's decisioning system has to make explicitly: the credit decisioning models themselves run on tightly governed, low-latency infrastructure, while a customer-facing servicing or explanation layer built on an LLM can afford to reason more expansively — because it's operating on a decision that already happened, not making one.
 
 ## The measurement habit
 

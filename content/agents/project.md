@@ -6,6 +6,7 @@ Good candidate ideas (pick one, or bring your own of similar shape):
 - A research agent that searches a small local set of documents (or calls a search API) and a calculator tool, then answers quantitative questions that require both retrieval and computation.
 - A personal-finance-style agent (in the spirit of this course's sibling project, SpendScanner) with tools like `get_transactions`, `categorize`, and `calculate_total`, that answers free-form questions about a sample dataset.
 - A GitHub-repo agent (using an MCP server, per the MCP lesson, or hand-rolled tools against the GitHub API) that answers questions like "what changed in the last 5 merged PRs touching `src/auth`?"
+- A model-governance intake triage agent, in the spirit of a real AI-model-oversight platform: tools like `check_governance_status` (has this model been classified under a policy framework?), `flag_missing_documentation`, and `draft_governance_summary`, that walks through a small sample set of "models" (even a mock dataset you make up) and produces a triage recommendation with its reasoning.
 
 ## Milestones
 

@@ -31,6 +31,8 @@ const response = await client.messages.create({
 });
 ```
 
+Swap `product-docs` for `sr-11-7-guidance` and this is the same shape as a compliance assistant answering "does our current adverse-action process satisfy Reg B's notice requirements" — retrieve the relevant guidance clauses, hand them to the model with strict grounding instructions, and let it answer only from what was actually retrieved.
+
 Three details in that prompt template matter more than they look:
 
 - **"ONLY the numbered sources"** — an explicit instruction to stay grounded, not an assumption the model will infer it on its own.
@@ -43,7 +45,7 @@ Three details in that prompt template matter more than they look:
 
 ## Handling "no good match"
 
-Every similarity search returns *something* — even if nothing in your corpus is actually relevant, you'll get the least-bad top-K results with low similarity scores. A pipeline that blindly hands these to the model produces confident-sounding answers built on irrelevant context. Set a similarity-score threshold below which you treat retrieval as having found nothing, and have your prompt (or your application logic) handle that case explicitly — either by telling the user directly, or by falling back to a "let me search more broadly" step rather than silently degrading into ungrounded generation.
+Every similarity search returns *something* — even if nothing in your corpus is actually relevant, you'll get the least-bad top-K results with low similarity scores. A pipeline that blindly hands these to the model produces confident-sounding answers built on irrelevant context. Set a similarity-score threshold below which you treat retrieval as having found nothing, and have your prompt (or your application logic) handle that case explicitly — either by telling the user directly, or by falling back to a "let me search more broadly" step rather than silently degrading into ungrounded generation. In a regulatory context this isn't a nicety — a compliance assistant that confidently answers a Reg B question from loosely related guidance because nothing better was retrieved is a worse outcome than one that says plainly "I don't have guidance covering that specific case."
 
 ## Formatting retrieved content for the model
 

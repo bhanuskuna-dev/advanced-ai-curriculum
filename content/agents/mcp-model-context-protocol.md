@@ -23,6 +23,8 @@ Reach for an MCP server when:
 - You want the *same* integration usable across multiple AI applications or frameworks, not locked into one codebase.
 - You're building a tool that's genuinely a reusable capability (a company-internal API that multiple internal AI tools should be able to call) rather than app-specific glue code.
 
+Consider a PM organization of seven people, each building their own one-off ChatGPT skills for tasks like checking a model's governance status or pulling underwriting policy language. Every one of them is separately re-implementing the same lookup against the same internal system. An MCP server exposing `get_model_governance_status` and `search_policy_guidance` once, then connected by every team member's own agent, replaces seven bespoke integrations with one maintained capability — and when the underlying policy system changes, there's exactly one server to update, not seven copies of hand-rolled glue code scattered across individual workflows.
+
 ## A minimal mental model of the wire protocol
 
 MCP servers and clients exchange JSON-RPC messages over a transport (commonly stdio for local servers, or HTTP/SSE for remote ones). A client typically does, in order:
@@ -38,7 +40,7 @@ You rarely hand-write this protocol layer yourself; you use an MCP SDK (availabl
 Because an MCP server can expose real, consequential actions (writing to a filesystem, calling a paid API, modifying a database), connecting a client to a new MCP server is equivalent to granting a new agent authority to your systems. Two practices matter in practice:
 
 - **Scope servers narrowly.** Prefer a server that only exposes read access to what an agent needs, over a general-purpose one with broad write access, unless the write access is the actual point.
-- **Treat tool descriptions from third-party servers as untrusted input to the model**, not as your own code. A malicious or compromised MCP server can supply a tool description crafted to manipulate the model's behavior (a form of prompt injection) — the same caution you'd apply to any external data reaching the model applies here too.
+- **Treat tool descriptions from third-party servers as untrusted input to the model**, not as your own code. A malicious or compromised MCP server can supply a tool description crafted to manipulate the model's behavior (a form of prompt injection) — the same caution you'd apply to any external data reaching the model applies here too. This is exactly why a `search_policy_guidance` server used in a regulated credit environment should be read-only and narrowly scoped — an agent with a governance-lookup tool has no business also holding a tool that can *modify* a model's SR 11-7 classification; those are two different levels of authority that deserve two different servers, or at minimum two clearly separated tools with an explicit approval step in front of the write path.
 
 ## Where this fits in the bigger picture
 
