@@ -2,10 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BrainCircuit, Github, MessageCircleQuestion } from "lucide-react";
+import { BrainCircuit, Github, MessageCircleQuestion, GraduationCap } from "lucide-react";
 import clsx from "@/lib/clsx";
 import { CURRICULUM } from "@/lib/curriculum";
 import { useProgress } from "@/hooks/useProgress";
+
+const NAV_LABELS: Record<string, string> = {
+  "agentic-architecture": "Agentic Architecture",
+  "tool-design-mcp": "Tool Design",
+  "claude-code-workflows": "Claude Code",
+  "prompt-engineering": "Prompt Engineering",
+  "context-reliability": "Context & Reliability",
+};
 
 export function Nav() {
   const pathname = usePathname();
@@ -31,9 +39,19 @@ export function Nav() {
                   : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"
               )}
             >
-              {mod.title.split("&")[0].trim()}
+              {NAV_LABELS[mod.slug] ?? mod.title}
             </Link>
           ))}
+          <Link
+            href="/practice-exams"
+            className={clsx(
+              "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors",
+              pathname.startsWith("/practice-exams") ? "bg-brand-50 text-brand-700" : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"
+            )}
+          >
+            <GraduationCap className="w-4 h-4" />
+            Practice Exams
+          </Link>
           <Link
             href="/tutor"
             className={clsx(

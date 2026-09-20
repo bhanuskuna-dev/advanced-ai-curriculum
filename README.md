@@ -1,14 +1,16 @@
 # Advanced AI Curriculum
 
-A self-paced curriculum for becoming an advanced AI user — structured lessons, an AI tutor chat, and hands-on projects, covering:
+A self-paced curriculum aligned to Anthropic's **Claude Certified Architect – Foundations** exam — structured lessons, an AI tutor chat, hands-on projects, and 3 full domain-weighted practice exams, covering all 5 exam domains:
 
-1. **Building with the Claude API & Agent SDK** — Messages API fundamentals, tool use, the agentic loop, MCP, multi-agent orchestration, prompt caching & cost.
-2. **RAG & Retrieval** — why retrieval exists, embeddings & similarity search, vector databases & chunking, building a RAG pipeline, advanced patterns (re-ranking, hybrid search, query rewriting).
-3. **Evals, Safety & Quality** — why evals matter, building a golden dataset, metrics & calibration, failure modes & mitigations, responsible use.
+1. **Agentic Architecture & Orchestration** (27%) — agent design fundamentals, the agentic loop, multi-agent orchestration, production system architecture, observability & debugging.
+2. **Tool Design & MCP Integration** (18%) — the tool-use loop, designing tool schemas, MCP, integrating external systems safely.
+3. **Claude Code Configuration & Workflows** (20%) — CLAUDE.md & settings.json, hooks & automation, slash commands & subagents, headless/CI workflows.
+4. **Prompt Engineering & Structured Output** (20%) — prompt fundamentals, system prompts & roles, chain-of-thought, structured output & schemas, iterating on prompts.
+5. **Context Management & Reliability** (15%) — context window fundamentals, managing long-running context, prompt caching & cost, reliability patterns.
 
-Each module has 5–6 lessons plus a hands-on project brief with an embedded AI mentor chat — the app gives guidance and code review, you write and run the actual code yourself.
+Each module has 4–5 lessons plus a hands-on project brief with an embedded AI mentor chat — the app gives guidance and code review, you write and run the actual code yourself. `/practice-exams` has 3 distinct 60-question mock exams, domain-weighted to match the real exam, scored on the same 1000-point scale with a 720 pass line.
 
-Progress (which lessons/projects you've completed) is tracked entirely in your browser's `localStorage` — nothing is sent to a server, and it doesn't sync across devices.
+Progress (lessons/projects completed, exam scores) is tracked entirely in your browser's `localStorage` — nothing is sent to a server, and it doesn't sync across devices.
 
 ---
 

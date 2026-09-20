@@ -12,6 +12,8 @@ export interface Project {
 export interface Module {
   slug: string;
   title: string;
+  /** Exam weight, as a percent of the Claude Certified Architect – Foundations exam this domain covers. */
+  weight: number;
   description: string;
   lessons: Lesson[];
   project: Project;
@@ -19,30 +21,21 @@ export interface Module {
 
 export const CURRICULUM: Module[] = [
   {
-    slug: "agents",
-    title: "Building with the Claude API & Agent SDK",
+    slug: "agentic-architecture",
+    title: "Agentic Architecture & Orchestration",
+    weight: 27,
     description:
-      "How Claude actually works under the hood as a product surface: the Messages API, tool use, the agentic loop, MCP, multi-agent orchestration, and the cost/latency levers that separate a toy demo from a production agent.",
+      "Agent design patterns, the agentic loop, multi-agent orchestration, and the production system architecture around them — the largest single domain on the Claude Certified Architect exam.",
     lessons: [
       {
-        slug: "messages-api-fundamentals",
-        title: "Messages API Fundamentals",
-        summary: "Requests, system prompts, message roles, streaming, and token usage — the substrate everything else is built on.",
+        slug: "agent-design-fundamentals",
+        title: "Agent Design Fundamentals",
+        summary: "What makes something an agent instead of a pipeline or a chatbot, and when the extra complexity actually earns its keep.",
       },
       {
-        slug: "tool-use-loop",
-        title: "Tool Use & the Tool-Use Loop",
-        summary: "Defining tools, the tool_use / tool_result round trip, parallel tool calls, and common failure modes.",
-      },
-      {
-        slug: "agentic-loop-and-memory",
-        title: "The Agentic Loop & Context Management",
-        summary: "How single tool calls become multi-step agents, and how to manage context so long-running agents don't degrade.",
-      },
-      {
-        slug: "mcp-model-context-protocol",
-        title: "MCP: The Model Context Protocol",
-        summary: "What MCP actually standardizes, when it beats hand-rolled tools, and how servers/clients fit together.",
+        slug: "the-agentic-loop",
+        title: "The Agentic Loop & Stopping Conditions",
+        summary: "The tool-use loop that underlies every agent, iteration caps, and forcing a clean final answer.",
       },
       {
         slug: "multi-agent-orchestration",
@@ -50,9 +43,14 @@ export const CURRICULUM: Module[] = [
         summary: "Orchestrator/worker, pipelines, and debate patterns — and when a second agent is worth the complexity.",
       },
       {
-        slug: "prompt-caching-and-cost",
-        title: "Prompt Caching, Cost & Latency",
-        summary: "The economics of agents in production: prompt caching, batching, model tiering, and where money actually goes.",
+        slug: "production-agent-architecture",
+        title: "Production Agent System Architecture",
+        summary: "How an agent fits into a real system: trust boundaries, privacy architecture, state, and deployment concerns.",
+      },
+      {
+        slug: "observability-and-debugging",
+        title: "Observability & Debugging Agents",
+        summary: "Why agent transcripts are your primary debugging tool, and what to log to make failures diagnosable.",
       },
     ],
     project: {
@@ -62,79 +60,149 @@ export const CURRICULUM: Module[] = [
     },
   },
   {
-    slug: "rag",
-    title: "RAG & Retrieval",
+    slug: "tool-design-mcp",
+    title: "Tool Design & MCP Integration",
+    weight: 18,
     description:
-      "Why retrieval exists, how embeddings and vector search actually work, and how to build (and improve) a retrieval-augmented generation pipeline.",
+      "Defining reliable tools, the tool-use round trip, and when to reach for the Model Context Protocol instead of hand-rolled integrations.",
     lessons: [
       {
-        slug: "why-retrieval",
-        title: "Why Retrieval Exists",
-        summary: "Context window limits, grounding, hallucination reduction, and freshness — the four problems RAG solves.",
+        slug: "tool-use-loop",
+        title: "Tool Use & the Tool-Use Loop",
+        summary: "Defining tools, the tool_use / tool_result round trip, parallel tool calls, and common failure modes.",
       },
       {
-        slug: "embeddings-and-similarity",
-        title: "Embeddings & Similarity Search",
-        summary: "What an embedding actually is, how cosine similarity works, and why 'semantic search' is just nearest-neighbor lookup.",
+        slug: "designing-tool-schemas",
+        title: "Designing Tool Schemas",
+        summary: "Narrow vs. broad tools, JSON Schema design decisions, and schemas as a security boundary.",
       },
       {
-        slug: "vector-databases-and-chunking",
-        title: "Vector Databases & Chunking Strategy",
-        summary: "Chunk size tradeoffs, overlap, metadata filtering, and how vector indexes (HNSW, IVF) make search fast at scale.",
+        slug: "mcp-model-context-protocol",
+        title: "MCP: The Model Context Protocol",
+        summary: "What MCP actually standardizes, when it beats hand-rolled tools, and how servers/clients fit together.",
       },
       {
-        slug: "building-a-rag-pipeline",
-        title: "Building a Retrieve → Augment → Generate Pipeline",
-        summary: "Wiring the three stages together end-to-end, including prompt construction and citation formatting.",
-      },
-      {
-        slug: "advanced-rag-patterns",
-        title: "Advanced RAG Patterns",
-        summary: "Re-ranking, hybrid search, query rewriting, and why naive top-k retrieval breaks down in practice.",
+        slug: "integrating-external-systems",
+        title: "Integrating External Systems Safely",
+        summary: "Auth, rate limits, and idempotency for tools that have real side effects on real systems.",
       },
     ],
     project: {
-      title: "Build a RAG-Powered Q&A App",
+      title: "Build an MCP-Integrated Tool",
       summary:
-        "Build a small app that answers questions over a handful of your own documents, with retrieval, grounded generation, and visible citations.",
+        "Wrap a real external system as an MCP server (or a hand-rolled tool, compared against MCP) and connect it to an agent.",
     },
   },
   {
-    slug: "evals",
-    title: "Evals, Safety & Quality",
+    slug: "claude-code-workflows",
+    title: "Claude Code Configuration & Workflows",
+    weight: 20,
     description:
-      "How to make AI quality measurable instead of vibes-based: golden datasets, metrics, calibration, failure modes, and responsible-use judgment.",
+      "Configuring and automating Claude Code itself: CLAUDE.md, settings and permissions, hooks, subagents, and running it headlessly in CI.",
     lessons: [
       {
-        slug: "why-evals-matter",
-        title: "Why Evals Matter",
-        summary: "AI regressions are silent by default. Evals are how you find out before your users do.",
+        slug: "what-is-claude-code",
+        title: "What Claude Code Is",
+        summary: "How Claude Code differs from raw API usage and from the Claude Agent SDK, and its core capabilities.",
       },
       {
-        slug: "building-a-golden-dataset",
-        title: "Building a Golden Dataset",
-        summary: "Labeling philosophy, why edge cases matter more than easy cases, and how to keep a dataset useful over time.",
+        slug: "claude-md-and-settings",
+        title: "CLAUDE.md & settings.json",
+        summary: "Project memory, permission rules, and configuration scope — project, user, and local settings.",
       },
       {
-        slug: "metrics-precision-recall-calibration",
-        title: "Metrics: Accuracy, Precision/Recall & Calibration",
-        summary: "Reading a confusion matrix, per-class recall, and why a well-calibrated confidence score is a feature, not a nicety.",
+        slug: "hooks-and-automation",
+        title: "Hooks & Workflow Automation",
+        summary: "Intercepting tool calls and lifecycle events to enforce policy and automate checks.",
       },
       {
-        slug: "failure-modes-and-mitigations",
-        title: "Failure Modes & Mitigations",
-        summary: "Hallucination, prompt injection, and overconfidence — how each actually happens and what to do about it.",
+        slug: "slash-commands-and-subagents",
+        title: "Slash Commands & Subagents",
+        summary: "Packaging repeatable workflows as commands, and delegating focused work to subagents.",
       },
       {
-        slug: "responsible-use-and-safety",
-        title: "Responsible Use & Safety Judgment",
-        summary: "The judgment calls an advanced AI user has to make that no eval score will make for you.",
+        slug: "headless-and-ci-workflows",
+        title: "Headless Mode & CI Workflows",
+        summary: "Running Claude Code non-interactively for scripting, automation, and continuous integration.",
       },
     ],
     project: {
-      title: "Build an Eval Harness",
+      title: "Configure a Claude Code Workflow",
       summary:
-        "Build a small eval harness for one of your own prompts or agents: a labeled dataset, a scoring script, and a regression gate.",
+        "Set up a real project with a CLAUDE.md, scoped permissions, at least one hook, and a headless automation script.",
+    },
+  },
+  {
+    slug: "prompt-engineering",
+    title: "Prompt Engineering & Structured Output",
+    weight: 20,
+    description:
+      "Writing prompts that reliably produce the behavior and format you want, from plain instructions through structured, schema-validated output.",
+    lessons: [
+      {
+        slug: "prompt-engineering-fundamentals",
+        title: "Prompt Engineering Fundamentals",
+        summary: "Clear instructions, context, and examples — the levers that move output quality the most.",
+      },
+      {
+        slug: "system-prompts-and-roles",
+        title: "System Prompts & Role Design",
+        summary: "Separating persistent behavior from the task at hand, and designing a persona that holds up under pressure.",
+      },
+      {
+        slug: "chain-of-thought-prompting",
+        title: "Chain-of-Thought & Reasoning Prompts",
+        summary: "When asking a model to reason step by step actually helps, and when it's just added cost.",
+      },
+      {
+        slug: "structured-output-and-schemas",
+        title: "Structured Output & Schemas",
+        summary: "Getting reliable, parseable output: schema-constrained generation, tool-based extraction, and validation.",
+      },
+      {
+        slug: "iterating-and-testing-prompts",
+        title: "Iterating & Testing Prompts",
+        summary: "Treating a prompt as a versioned artifact you test changes against, not a one-time draft.",
+      },
+    ],
+    project: {
+      title: "Build a Structured-Output Extraction Tool",
+      summary:
+        "Build a small tool that extracts structured, schema-validated data from messy unstructured text, with a test set of tricky inputs.",
+    },
+  },
+  {
+    slug: "context-reliability",
+    title: "Context Management & Reliability",
+    weight: 15,
+    description:
+      "Token and context-window mechanics, prompt caching, and the reliability patterns that keep an agent working under real-world failure conditions.",
+    lessons: [
+      {
+        slug: "context-window-fundamentals",
+        title: "Context Window & Token Fundamentals",
+        summary: "The stateless Messages API, token usage, and why conversation length is a cost and quality variable.",
+      },
+      {
+        slug: "managing-long-running-context",
+        title: "Managing Long-Running Context",
+        summary: "Summarizing, pruning, and minimizing tool payloads so long agent runs don't degrade.",
+      },
+      {
+        slug: "prompt-caching-and-cost",
+        title: "Prompt Caching, Cost & Latency",
+        summary: "The economics of agents in production: prompt caching, batching, model tiering, and where money actually goes.",
+      },
+      {
+        slug: "reliability-patterns",
+        title: "Reliability Patterns: Retries & Fallbacks",
+        summary: "Handling malformed output, rate limits, and transient failures without silently corrupting results.",
+      },
+    ],
+    project: {
+      title: "Harden an Agent for Reliability",
+      summary:
+        "Take an existing agent and add retries, structured-output validation with repair, and graceful degradation under rate limits.",
     },
   },
 ];

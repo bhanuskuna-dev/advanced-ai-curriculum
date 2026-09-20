@@ -5,7 +5,7 @@ import { Nav } from "@/components/Nav";
 export const metadata: Metadata = {
   title: "Advanced AI Curriculum",
   description:
-    "A self-paced curriculum for becoming an advanced AI user: the Claude API & Agent SDK, RAG & retrieval, and evals/safety — with structured lessons, an AI tutor, and hands-on projects.",
+    "A self-paced curriculum aligned to Anthropic's Claude Certified Architect – Foundations exam: agentic architecture, tool/MCP design, Claude Code workflows, prompt engineering, and context/reliability — with structured lessons, an AI tutor, hands-on projects, and 3 full practice exams.",
 };
 
 export default function RootLayout({

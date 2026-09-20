@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, MessageCircleQuestion, Sparkles } from "lucide-react";
+import { ArrowRight, GraduationCap, MessageCircleQuestion, Sparkles } from "lucide-react";
 import { CURRICULUM } from "@/lib/curriculum";
 import { useProgress } from "@/hooks/useProgress";
 
@@ -13,26 +13,30 @@ export default function HomePage() {
       <div className="mb-10">
         <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 bg-brand-50 px-3 py-1 rounded-full mb-4">
           <Sparkles className="w-3.5 h-3.5" />
-          Self-paced curriculum
+          Aligned to the Claude Certified Architect – Foundations exam
         </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-3">
           Become an advanced AI user
         </h1>
         <p className="text-slate-500 max-w-2xl leading-relaxed">
-          Three modules, each with structured lessons, an AI tutor to ask questions along the way, and a
-          hands-on project you build yourself. No fluff on prompting basics — this goes straight into building
-          real systems with the Claude API, retrieval, and the evals discipline that keeps them reliable.
+          Five modules, weighted to match the real exam&apos;s 5 domains, each with structured lessons, an AI tutor, and a
+          hands-on project you build yourself — plus 3 full-length, domain-weighted practice exams. This goes
+          straight into building and operating real systems with the Claude API, Claude Code, and the reliability
+          discipline that keeps them production-worthy.
         </p>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-3">
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {CURRICULUM.map((mod) => (
           <Link
             key={mod.slug}
             href={`/modules/${mod.slug}`}
             className="group bg-white rounded-2xl border border-slate-100 shadow-card hover:shadow-card-hover transition-shadow p-6 flex flex-col"
           >
-            <h2 className="font-bold text-slate-900 mb-2 group-hover:text-brand-700 transition-colors">{mod.title}</h2>
+            <div className="flex items-start justify-between gap-2 mb-2">
+              <h2 className="font-bold text-slate-900 group-hover:text-brand-700 transition-colors">{mod.title}</h2>
+              <span className="shrink-0 text-xs font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full">{mod.weight}%</span>
+            </div>
             <p className="text-sm text-slate-500 leading-relaxed mb-4 flex-1">{mod.description}</p>
 
             <div className="mb-4">
@@ -56,19 +60,35 @@ export default function HomePage() {
         ))}
       </div>
 
-      <Link
-        href="/tutor"
-        className="mt-6 flex items-center gap-3 bg-white rounded-2xl border border-slate-100 shadow-card hover:shadow-card-hover transition-shadow p-5"
-      >
-        <div className="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center shrink-0">
-          <MessageCircleQuestion className="w-5 h-5 text-brand-600" />
-        </div>
-        <div>
-          <div className="font-semibold text-slate-900">Ask the AI tutor anything</div>
-          <div className="text-sm text-slate-500">Open-ended questions across the whole curriculum — not tied to one lesson.</div>
-        </div>
-        <ArrowRight className="w-4 h-4 text-slate-300 ml-auto" />
-      </Link>
+      <div className="grid gap-4 sm:grid-cols-2 mt-6">
+        <Link
+          href="/practice-exams"
+          className="flex items-center gap-3 bg-white rounded-2xl border border-slate-100 shadow-card hover:shadow-card-hover transition-shadow p-5"
+        >
+          <div className="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center shrink-0">
+            <GraduationCap className="w-5 h-5 text-brand-600" />
+          </div>
+          <div>
+            <div className="font-semibold text-slate-900">Take a practice exam</div>
+            <div className="text-sm text-slate-500">3 full 60-question mock exams, domain-weighted like the real thing.</div>
+          </div>
+          <ArrowRight className="w-4 h-4 text-slate-300 ml-auto shrink-0" />
+        </Link>
+
+        <Link
+          href="/tutor"
+          className="flex items-center gap-3 bg-white rounded-2xl border border-slate-100 shadow-card hover:shadow-card-hover transition-shadow p-5"
+        >
+          <div className="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center shrink-0">
+            <MessageCircleQuestion className="w-5 h-5 text-brand-600" />
+          </div>
+          <div>
+            <div className="font-semibold text-slate-900">Ask the AI tutor anything</div>
+            <div className="text-sm text-slate-500">Open-ended questions across the whole curriculum.</div>
+          </div>
+          <ArrowRight className="w-4 h-4 text-slate-300 ml-auto shrink-0" />
+        </Link>
+      </div>
     </main>
   );
 }
