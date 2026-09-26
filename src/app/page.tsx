@@ -19,43 +19,48 @@ export default function HomePage() {
           Become an advanced AI user
         </h1>
         <p className="text-slate-500 max-w-2xl leading-relaxed">
-          Five modules, weighted to match the real exam&apos;s 5 domains, each with structured lessons, an AI tutor, and a
-          hands-on project you build yourself — plus 3 full-length, domain-weighted practice exams. This goes
-          straight into building and operating real systems with the Claude API, Claude Code, and the reliability
-          discipline that keeps them production-worthy.
+          Five modules in a deliberate sequence — each one builds on the skills from the last, from talking to Claude
+          well, through giving it tools, to composing full agents, to operating Claude Code itself. Structured
+          lessons, an AI tutor, a hands-on project per module, and 3 full-length practice exams, domain-weighted to
+          match the real Claude Certified Architect exam.
         </p>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {CURRICULUM.map((mod) => (
+      <div className="space-y-3">
+        {CURRICULUM.map((mod, i) => (
           <Link
             key={mod.slug}
             href={`/modules/${mod.slug}`}
-            className="group bg-white rounded-2xl border border-slate-100 shadow-card hover:shadow-card-hover transition-shadow p-6 flex flex-col"
+            className="group flex gap-4 bg-white rounded-2xl border border-slate-100 shadow-card hover:shadow-card-hover transition-shadow p-5 sm:p-6"
           >
-            <div className="flex items-start justify-between gap-2 mb-2">
-              <h2 className="font-bold text-slate-900 group-hover:text-brand-700 transition-colors">{mod.title}</h2>
-              <span className="shrink-0 text-xs font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full">{mod.weight}%</span>
+            <div className="shrink-0 w-9 h-9 rounded-full bg-brand-500 text-white flex items-center justify-center font-bold text-sm">
+              {i + 1}
             </div>
-            <p className="text-sm text-slate-500 leading-relaxed mb-4 flex-1">{mod.description}</p>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-start justify-between gap-2 mb-1.5">
+                <h2 className="font-bold text-slate-900 group-hover:text-brand-700 transition-colors">{mod.title}</h2>
+                <span className="shrink-0 text-xs font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full">{mod.weight}% of exam</span>
+              </div>
+              <p className="text-sm text-slate-500 leading-relaxed mb-3">{mod.description}</p>
 
-            <div className="mb-4">
-              <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
-                <span>{mod.lessons.length} lessons + 1 project</span>
-                <span className="tabular-nums">{hydrated ? percentForModule(mod.slug) : 0}%</span>
+              <div className="mb-3 max-w-sm">
+                <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
+                  <span>{mod.lessons.length} lessons + 1 project</span>
+                  <span className="tabular-nums">{hydrated ? percentForModule(mod.slug) : 0}%</span>
+                </div>
+                <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                  <div
+                    className="h-full bg-brand-500 rounded-full transition-all"
+                    style={{ width: `${hydrated ? percentForModule(mod.slug) : 0}%` }}
+                  />
+                </div>
               </div>
-              <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
-                <div
-                  className="h-full bg-brand-500 rounded-full transition-all"
-                  style={{ width: `${hydrated ? percentForModule(mod.slug) : 0}%` }}
-                />
-              </div>
+
+              <span className="inline-flex items-center gap-1 text-sm font-semibold text-brand-600">
+                {i === 0 ? "Start here" : "Start module"}
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              </span>
             </div>
-
-            <span className="inline-flex items-center gap-1 text-sm font-semibold text-brand-600">
-              Start module
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-            </span>
           </Link>
         ))}
       </div>

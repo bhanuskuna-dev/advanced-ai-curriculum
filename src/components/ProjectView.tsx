@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, Circle } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Circle, PartyPopper } from "lucide-react";
 import { MarkdownContent } from "@/components/MarkdownContent";
 import { ChatPanel } from "@/components/ChatPanel";
 import { useProgress } from "@/hooks/useProgress";
+import { getNextModule } from "@/lib/curriculum";
 import clsx from "@/lib/clsx";
 
 export function ProjectView({
@@ -20,6 +21,7 @@ export function ProjectView({
 }) {
   const { hydrated, isComplete, toggleComplete } = useProgress();
   const done = hydrated && isComplete(moduleSlug, "project");
+  const nextModule = getNextModule(moduleSlug);
 
   return (
     <main className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
@@ -61,6 +63,33 @@ export function ProjectView({
           />
         </div>
       </div>
+
+      {nextModule ? (
+        <Link
+          href={`/modules/${nextModule.slug}`}
+          className="mt-6 flex items-center gap-3 bg-brand-50 border border-brand-100 rounded-2xl px-5 py-4 hover:bg-brand-100/60 transition-colors"
+        >
+          <div className="flex-1">
+            <div className="text-xs font-semibold text-brand-500 uppercase tracking-wide mb-0.5">Continue the sequence</div>
+            <div className="font-semibold text-slate-900">Next: {nextModule.title}</div>
+          </div>
+          <ArrowRight className="w-4 h-4 text-brand-400 shrink-0" />
+        </Link>
+      ) : (
+        <div className="mt-6 flex items-center gap-3 bg-success-50 border border-success-100 rounded-2xl px-5 py-4">
+          <PartyPopper className="w-6 h-6 text-success-600 shrink-0" />
+          <div>
+            <div className="font-semibold text-slate-900">That&apos;s the full sequence</div>
+            <div className="text-sm text-slate-600">
+              You&apos;ve worked through all 5 modules — head to{" "}
+              <Link href="/practice-exams" className="text-brand-600 font-medium hover:underline">
+                the practice exams
+              </Link>{" "}
+              to see where you actually stand.
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

@@ -4,7 +4,7 @@ import { use } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CheckCircle2, Circle, FolderKanban, ArrowRight } from "lucide-react";
-import { getModule } from "@/lib/curriculum";
+import { CURRICULUM, getModule, getModuleNumber } from "@/lib/curriculum";
 import { useProgress } from "@/hooks/useProgress";
 import clsx from "@/lib/clsx";
 
@@ -18,6 +18,9 @@ export default function ModulePage({ params }: { params: Promise<{ moduleSlug: s
   return (
     <main className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
       <div className="mb-8">
+        <div className="text-xs font-bold text-brand-500 uppercase tracking-wide mb-2">
+          Module {getModuleNumber(mod.slug)} of {CURRICULUM.length}
+        </div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-2">{mod.title}</h1>
         <p className="text-slate-500 leading-relaxed mb-4">{mod.description}</p>
         <div className="flex items-center gap-2">
