@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, CheckCircle2, Circle, FolderKanban } from "lucide-react";
 import { MarkdownContent } from "@/components/MarkdownContent";
+import { KeyTakeaways } from "@/components/KeyTakeaways";
+import { QuickCheck } from "@/components/QuickCheck";
 import { useProgress } from "@/hooks/useProgress";
+import { getLessonEnhancement } from "@/lib/lessonEnhancements";
 import clsx from "@/lib/clsx";
 
 interface AdjacentLesson {
@@ -32,6 +35,7 @@ export function LessonView({
 }) {
   const { hydrated, isComplete, toggleComplete } = useProgress();
   const done = hydrated && isComplete(moduleSlug, lessonSlug);
+  const enhancement = getLessonEnhancement(moduleSlug, lessonSlug);
 
   return (
     <main className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
@@ -44,6 +48,9 @@ export function LessonView({
           {moduleTitle}
         </Link>
       </div>
+
+      {enhancement && <KeyTakeaways points={enhancement.keyTakeaways} />}
+      {enhancement?.Diagram && <enhancement.Diagram />}
 
       <div className="bg-white rounded-2xl border border-slate-100 shadow-card px-6 sm:px-8 py-8 mb-6">
         <div className="flex items-start justify-between gap-4 mb-2">
@@ -62,7 +69,9 @@ export function LessonView({
         <MarkdownContent content={content} />
       </div>
 
-      <div className="flex items-center justify-between gap-4">
+      {enhancement && <QuickCheck questions={enhancement.quickCheck} />}
+
+      <div className="flex items-center justify-between gap-4 mt-6">
         {prev ? (
           <Link
             href={`/modules/${moduleSlug}/${prev.slug}`}
